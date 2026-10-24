@@ -16,12 +16,12 @@ struct User: Codable {
 
 // MARK: - 登录响应
 struct LoginResponse: Codable {
-    let success: Bool
+    let success: Bool?
     let accessToken: String
     let refreshToken: String
-    let tokenType: String
-    let expiresIn: Int
-    let user: User
+    let tokenType: String?
+    let expiresIn: Int?
+    let user: User?
     
     enum CodingKeys: String, CodingKey {
         case success
