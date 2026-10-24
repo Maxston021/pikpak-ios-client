@@ -20,69 +20,23 @@ jobs:
     - name: Install XcodeGen
       run: brew install xcodegen
 
+    - name: Show iOS directory structure
+      working-directory: ios
+      run: find . -type f -name "*.swift"
+
     - name: Generate Xcode project
       working-directory: ios
       run: xcodegen generate
 
-    - name: Show project structure
+    - name: List project files
       working-directory: ios
       run: ls -la
 
-    - name: Build and archive
+    - name: Build for simulator (test)
       working-directory: ios
       run: |
-        xcodebuild archive \
+        xcodebuild build \
           -project PikPakClient.xcodeproj \
           -scheme PikPakClient \
-          -configuration Release \
-          -destination 'generic/platform=iOS' \
-          -archivePath build/PikPakClient.xcarchive \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          AD_HOC_CODE_SIGNING_ALLOWED=YES
-
-    - name: Create export options plist
-      working-directory: ios
-      run: |
-        mkdir -p build
-        cat > build/ExportOptions.plist << 'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>method</key>
-            <string>release</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>stripSwiftSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-            <key>thinning</key>
-            <string>&lt;none&gt;</string>
-        </dict>
-        </plist>
-        EOF
-
-    - name: Export IPA
-      working-directory: ios
-      run: |
-        xcodebuild -exportArchive \
-          -archivePath build/PikPakClient.xcarchive \
-          -exportPath build/ipa \
-          -exportOptionsPlist build/ExportOptions.plist \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
+          -destination 'platform=iOS Simulator,name=iPhone 15' \
           CODE_SIGNING_ALLOWED=NO
-
-    - name: List output files
-      working-directory: ios
-      run: ls -la build/ipa/
-
-    - name: Upload IPA
-      uses: actions/upload-artifact@v4
-      with:
-        name: PikPakClient-iOS-IPA
-        path: ios/build/ipa/*.ipa
-        retention-days: 30
