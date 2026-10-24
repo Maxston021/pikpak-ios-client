@@ -50,8 +50,8 @@ class AuthManager: ObservableObject {
         userDefaults.set(response.accessToken, forKey: tokenKey)
         userDefaults.set(response.refreshToken, forKey: refreshKey)
         
-        if let user = response.user,
-           let userData = try? JSONEncoder().encode(user) {
+        let userData = try? JSONEncoder().encode(response.user)
+        if let userData = userData {
             userDefaults.set(userData, forKey: userKey)
         }
     }
