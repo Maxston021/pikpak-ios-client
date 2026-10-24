@@ -39,7 +39,8 @@ class APIService: ObservableObject {
         }
         
         guard (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.httpError(httpResponse.statusCode)
+            let bodyStr = String(data: data, encoding: .utf8) ?? "unknown"
+            throw APIError.httpError(httpResponse.statusCode, bodyStr)
         }
         
         do {
@@ -128,18 +129,22 @@ class APIService: ObservableObject {
 }
 
 // MARK: - 错误类型
-enum APIError: Error {
+enum APIError: LocalizedError {
     case invalidResponse
-    case httpError(Int)
+    case httpError(Int, String)
     case decodingError
     case unauthorized
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self {
-        case .invalidResponse: return "无效的服务器响应"
-        case .httpError(let code): return "HTTP 错误: \(code)"
-        case .decodingError: return "数据解析错误"
-        case .unauthorized: return "未授权，请重新登录"
+        case .invalidResponse:
+            return "无效的服务器响应"
+        case .httpError(let code, let body):
+            return "HTTP \(code): \(body)"
+        case .decodingError:
+            return "数据解析错误"
+        case .unauthorized:
+            return "未授权，请重新登录"
         }
     }
 }
