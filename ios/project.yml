@@ -1,0 +1,26 @@
+name: PikPakClient
+options:
+  bundleIdPrefix: com.maxston
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "15.0"
+
+targets:
+  PikPakClient:
+    type: application
+    platform: iOS
+    sources:
+      - path: PikPakClient
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.maxston.pikpak
+        MARKETING_VERSION: 1.0.0
+        CURRENT_PROJECT_VERSION: 1
+        INFOPLIST_FILE: PikPakClient/Info.plist
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGN_IDENTITY: ""
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_XR: NO

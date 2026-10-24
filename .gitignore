@@ -1,0 +1,33 @@
+# Xcode
+build/
+*.xcodeproj
+*.xcworkspace
+*.xcarchive
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# 临时文件
+*.log
+*.tmp
