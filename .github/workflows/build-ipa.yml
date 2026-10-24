@@ -35,8 +35,9 @@ jobs:
     - name: Build for simulator (test)
       working-directory: ios
       run: |
+        set -o pipefail
         xcodebuild build \
           -project PikPakClient.xcodeproj \
           -scheme PikPakClient \
           -destination 'generic/platform=iOS Simulator' \
-          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "error:|warning:|FAILED|SUCCEEDED"
