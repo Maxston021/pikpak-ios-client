@@ -13,14 +13,8 @@ struct PikPakClientApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if authManager.isLoggedIn {
-                    FileListView()
-                } else {
-                    LoginView()
-                }
-            }
-            .environmentObject(authManager)
+            LoginView()
+                .environmentObject(authManager)
         }
     }
 }
