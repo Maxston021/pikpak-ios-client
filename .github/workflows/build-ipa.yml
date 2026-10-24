@@ -24,61 +24,32 @@ jobs:
       working-directory: ios
       run: xcodegen generate
 
-    - name: Build for simulator (verify compile)
+    - name: Build for device
       working-directory: ios
       run: |
         set -o pipefail
         xcodebuild build \
           -project PikPakClient.xcodeproj \
           -scheme PikPakClient \
-          -destination 'generic/platform=iOS Simulator' \
-          CODE_SIGNING_ALLOWED=NO
-
-    - name: Archive for device
-      working-directory: ios
-      run: |
-        set -o pipefail
-        xcodebuild archive \
-          -project PikPakClient.xcodeproj \
-          -scheme PikPakClient \
           -configuration Release \
-          -archivePath build/PikPakClient.xcarchive \
+          -sdk iphoneos \
+          -derivedDataPath build \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGN_IDENTITY=""
 
-    - name: Create export plist
+    - name: Package IPA
       working-directory: ios
       run: |
-        cat > build/ExportOptions.plist << EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>method</key>
-            <string>release</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>stripSwiftSymbols</key>
-            <true/>
-        </dict>
-        </plist>
-        EOF
-
-    - name: Export IPA
-      working-directory: ios
-      run: |
-        set -o pipefail
-        xcodebuild -exportArchive \
-          -archivePath build/PikPakClient.xcarchive \
-          -exportPath build/ipa \
-          -exportOptionsPlist build/ExportOptions.plist \
-          CODE_SIGNING_ALLOWED=NO \
-          CODE_SIGNING_REQUIRED=NO
+        mkdir -p build/ipa/Payload
+        cp -r "build/Build/Products/Release-iphoneos/PikPakClient.app" build/ipa/Payload/
+        cd build/ipa
+        zip -r PikPakClient.ipa Payload
+        ls -la PikPakClient.ipa
 
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v4
       with:
         name: PikPakClient-IPA
-        path: ios/build/ipa/*.ipa
+        path: ios/build/ipa/PikPakClient.ipa
         retention-days: 30
