@@ -34,12 +34,19 @@ class APIService: ObservableObject {
         
         let (data, response) = try await session.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
         }
         
-        return try JSONDecoder.pikPakDecoder.decode(LoginResponse.self, from: data)
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+        
+        do {
+            return try JSONDecoder.pikPakDecoder.decode(LoginResponse.self, from: data)
+        } catch {
+            throw APIError.decodingError
+        }
     }
     
     // MARK: - 获取文件列表
