@@ -10,8 +10,9 @@ import Foundation
 class APIService: ObservableObject {
     static let shared = APIService()
     
-    // 后端 API 地址 - 用老的、被信任的部署
-    let baseURL = "https://douyuan.de5.net"
+    // 登录用老后端（绕过 captcha），其他接口用我们自己的后端
+    let loginBaseURL = "https://douyuan.de5.net"
+    let baseURL = "https://pikpak-i93103c3l-again-021.vercel.app"
     
     private let session: URLSession
     
@@ -24,7 +25,7 @@ class APIService: ObservableObject {
     
     // MARK: - 登录
     func login(username: String, password: String) async throws -> LoginResponse {
-        let url = URL(string: "\(baseURL)/api/pikpak/login")!
+        let url = URL(string: "\(loginBaseURL)/api/pikpak/login")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
