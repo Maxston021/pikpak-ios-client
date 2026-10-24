@@ -15,9 +15,9 @@ struct PikPakClientApp: App {
         WindowGroup {
             Group {
                 if authManager.isLoggedIn {
-                    Text("Logged In!")
+                    FileListView()
                 } else {
-                    Text("Login View Placeholder")
+                    LoginView()
                 }
             }
             .environmentObject(authManager)
