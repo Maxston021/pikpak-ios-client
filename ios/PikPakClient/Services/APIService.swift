@@ -10,8 +10,8 @@ import Foundation
 class APIService: ObservableObject {
     static let shared = APIService()
     
-    // 后端 API 地址 - 已部署到 Vercel
-    let baseURL = "https://pikpak-i93103c3l-again-021.vercel.app"
+    // 后端 API 地址 - 用老的、被信任的部署
+    let baseURL = "https://douyuan.de5.net"
     
     private let session: URLSession
     
@@ -24,7 +24,7 @@ class APIService: ObservableObject {
     
     // MARK: - 登录
     func login(username: String, password: String) async throws -> LoginResponse {
-        let url = URL(string: "\(baseURL)/api/login")!
+        let url = URL(string: "\(baseURL)/api/pikpak/login")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
