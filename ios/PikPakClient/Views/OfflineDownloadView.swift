@@ -98,7 +98,3 @@ struct OfflineDownloadView: View {
         }
     }
 }
-
-#Preview {
-    OfflineDownloadView(folderId: "root")
-}

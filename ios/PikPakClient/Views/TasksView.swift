@@ -113,7 +113,3 @@ struct TaskRowView: View {
         }
     }
 }
-
-#Preview {
-    TasksView()
-}

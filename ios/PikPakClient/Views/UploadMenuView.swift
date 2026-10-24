@@ -123,7 +123,3 @@ struct UploadOptionRow: View {
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }
-
-#Preview {
-    UploadMenuView(currentFolderId: "root", onOfflineDownload: {})
-}

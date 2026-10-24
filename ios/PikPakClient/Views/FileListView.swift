@@ -151,7 +151,3 @@ struct FileListView: View {
         }
     }
 }
-
-#Preview {
-    FileListView()
-}

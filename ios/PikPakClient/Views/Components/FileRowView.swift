@@ -101,17 +101,3 @@ struct FileRowView: View {
         return displayFormatter.string(from: date)
     }
 }
-
-#Preview {
-    FileRowView(file: FileItem(
-        id: "123",
-        name: "测试文件夹",
-        kind: "folder",
-        mimeType: "folder",
-        size: 0,
-        createdAt: "2026-01-01T00:00:00Z",
-        modifiedAt: "2026-01-01T00:00:00Z",
-        parentId: "root",
-        thumbnail: ""
-    ))
-}
