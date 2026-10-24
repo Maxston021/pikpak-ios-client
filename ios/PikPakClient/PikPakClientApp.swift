@@ -15,7 +15,7 @@ struct PikPakClientApp: App {
         WindowGroup {
             Group {
                 if authManager.isLoggedIn {
-                    FileListView()
+                    MainTabView()
                 } else {
                     LoginView()
                 }

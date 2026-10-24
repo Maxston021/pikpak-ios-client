@@ -10,9 +10,8 @@ import Foundation
 class APIService: ObservableObject {
     static let shared = APIService()
     
-    // 登录用老后端（绕过 captcha），其他接口用我们自己的后端
-    let loginBaseURL = "https://douyuan.de5.net"
-    let baseURL = "https://pikpak-i93103c3l-again-021.vercel.app"
+    // 所有接口都用老后端（被 PikPak 信任，无风控）
+    let baseURL = "https://douyuan.de5.net"
     
     private let session: URLSession
     
@@ -25,7 +24,7 @@ class APIService: ObservableObject {
     
     // MARK: - 登录
     func login(username: String, password: String) async throws -> LoginResponse {
-        let url = URL(string: "\(loginBaseURL)/api/pikpak/login")!
+        let url = URL(string: "\(baseURL)/api/pikpak/login")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -96,13 +95,13 @@ class APIService: ObservableObject {
     
     // MARK: - 添加离线下载
     func addOfflineDownload(accessToken: String, url: String, parentId: String = "root") async throws -> OfflineDownloadResponse {
-        let apiURL = URL(string: "\(baseURL)/api/offline-download?access_token=\(accessToken)")!
+        let apiURL = URL(string: "\(baseURL)/api/pikpak/add")!
         var request = URLRequest(url: apiURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = ["url": url, "parent_id": parentId]
-        request.httpBody = try JSONEncoder().encode(body)
+        let body = ["access_token": accessToken, "url": url, "parent_id": parentId] as [String : Any]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
         let (data, response) = try await session.data(for: request)
         
@@ -116,16 +115,26 @@ class APIService: ObservableObject {
     
     // MARK: - 获取任务列表
     func listTasks(accessToken: String) async throws -> TaskListResponse {
-        let url = URL(string: "\(baseURL)/api/tasks?access_token=\(accessToken)&limit=20")!
+        let url = URL(string: "\(baseURL)/api/pikpak/tasks?limit=20")!
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
-        let (data, response) = try await session.data(from: url)
+        let (data, response) = try await session.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
         }
         
-        return try JSONDecoder.pikPakDecoder.decode(TaskListResponse.self, from: data)
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let bodyStr = String(data: data, encoding: .utf8) ?? "unknown"
+            throw APIError.httpError(httpResponse.statusCode, bodyStr)
+        }
+        
+        do {
+            return try JSONDecoder.pikPakDecoder.decode(TaskListResponse.self, from: data)
+        } catch {
+            throw APIError.decodingError
+        }
     }
 }
 
