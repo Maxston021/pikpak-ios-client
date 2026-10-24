@@ -2,7 +2,7 @@ name: PikPakClient
 options:
   bundleIdPrefix: com.maxston
   deploymentTarget:
-    iOS: "15.0"
+    iOS: "16.0"
   xcodeVersion: "15.0"
 
 targets:

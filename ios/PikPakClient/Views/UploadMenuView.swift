@@ -6,15 +6,12 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct UploadMenuView: View {
     let currentFolderId: String
     let onOfflineDownload: () -> Void
     
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedItems: [PhotosPickerItem] = []
-    @State private var isUploading = false
     
     var body: some View {
         NavigationView {
@@ -26,7 +23,9 @@ struct UploadMenuView: View {
                 
                 VStack(spacing: 12) {
                     // 相册上传
-                    PhotosPicker(selection: $selectedItems, maxSelectionCount: 10, matching: .images) {
+                    Button {
+                        dismiss()
+                    } label: {
                         UploadOptionRow(
                             icon: "photo.on.rectangle",
                             title: "从相册上传",
@@ -37,7 +36,6 @@ struct UploadMenuView: View {
                     
                     // 文件上传
                     Button {
-                        // TODO: 实现文件选择器
                         dismiss()
                     } label: {
                         UploadOptionRow(
@@ -63,7 +61,6 @@ struct UploadMenuView: View {
                     
                     // 新建文件夹
                     Button {
-                        // TODO: 实现新建文件夹
                         dismiss()
                     } label: {
                         UploadOptionRow(
@@ -86,22 +83,6 @@ struct UploadMenuView: View {
                     }
                 }
             }
-            .onChange(of: selectedItems) { newItems in
-                if !newItems.isEmpty {
-                    uploadPhotos(items: newItems)
-                }
-            }
-        }
-    }
-    
-    private func uploadPhotos(items: [PhotosPickerItem]) {
-        isUploading = true
-        // TODO: 实现图片上传到 PikPak
-        // Vercel Serverless 上传文件有限制，建议使用客户端直传
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            isUploading = false
-            dismiss()
         }
     }
 }
